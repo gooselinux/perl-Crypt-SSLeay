@@ -1,0 +1,46 @@
+--- Crypt-SSLeay-0.57/Makefile.PL	Mon Sep 17 16:36:59 2007
++++ Crypt-SSLeay-0.57/Makefile.PL	Thu Oct 25 13:45:53 2007
+@@ -9,12 +9,13 @@
+ eval "use ExtUtils::MakeMaker::Coverage";
+ $@ or print "Adding testcover target\n";
+ 
+-use vars qw($opt_default $opt_libpath $opt_static);
++use vars qw($opt_default $opt_libpath $opt_static $opt_live_tests);
+ 
+ GetOptions(
+     "default", \$opt_default,
+     "lib=s",   \$opt_libpath,
+     "static",  \$opt_static,
++    "live-tests!", \$opt_live_tests,
+ );
+ 
+ $opt_default ||= $ENV{CRYPT_SSLEAY_DEFAULT};
+@@ -275,17 +276,23 @@
+ cc $Config{cc}
+ INFO
+ 
+-    print <<"INFO";
++    my $network_tests = 'n';
++    if (not defined $opt_live_tests) {
++        print <<"INFO";
+ The test suite can attempt to connect to public servers
+ to ensure that the code is working properly. If you are
+ behind a strict firewall or have no network connectivity,
+ these tests may fail (through no fault of the code).
+-
+ INFO
+-    my $network_tests = prompt
+-        "Do you want to run the live tests (y/N) ?",
+-        'N';
++
++        $network_tests = prompt "Do you want to run the live tests (y/N) ?", 'N';
++    }
++    elsif ($opt_live_tests) {
++        $network_tests = 'y';
++    }
++
+     print OUT "network_tests ", ($network_tests =~ /y/i) ? 1 : 0, "\n";
++
+     close OUT;
+ }
+ 

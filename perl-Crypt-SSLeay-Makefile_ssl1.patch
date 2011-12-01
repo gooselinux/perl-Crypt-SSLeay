@@ -1,0 +1,18 @@
+diff -up Crypt-SSLeay-0.57/Makefile.PL.old Crypt-SSLeay-0.57/Makefile.PL
+--- Crypt-SSLeay-0.57/Makefile.PL.old	2009-11-25 13:33:07.000000000 +0100
++++ Crypt-SSLeay-0.57/Makefile.PL	2009-11-25 13:57:25.876693800 +0100
+@@ -343,11 +343,11 @@ sub Candidate {
+     my $version;
+     my $type;
+     while (<VERSION_FILE>) {
+-        if (/^#define\s+$version_match\s+0x0+(\d\d\d)/) {
++        if (/^#define\s+$version_match\s+0x(\d\d\d\d)/) {
+             $version = $1;
+-            $version =~ s/(\d)0(\d)/$1$2/;            
++            $version =~ s/^(\d)0(\d)0(\d)/$1$2$3/;            
+             $type = ($version > 92) ? "OpenSSL" : "SSLeay";
+-            $version = join('.', split(//, "0$version"));
++            $version = join('.', split(//, $version));
+             last;
+         }
+     }
